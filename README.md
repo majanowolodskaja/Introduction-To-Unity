@@ -1,4 +1,5 @@
 # Roll-a-Ball in Unity
+![image](/images/banner.png)
 
 A simple 3D game made in Unity! You move a ball, collect cubes, and win.  
 This project was part of my e-portfolio presentation, and it shows the basics of using Unity for game dev.
@@ -78,6 +79,9 @@ You can follow along in your own Unity project, and I’ll include screenshots a
       - [Steps:](#steps-6)
     - [10. Add a Lose Condition (Fall Off = Game Over)](#10-add-a-lose-condition-fall-off--game-over)
       - [Steps:](#steps-7)
+    - [11. Add Materials and Color ⋆ ˚｡⋆୨୧˚](#11-add-materials-and-color--୨୧)
+      - [Steps:](#steps-8)
+      - [Finished Product:](#finished-product)
   - [Code Explanation](#code-explanation)
     - [Script 1: `PlayerMovement.cs`](#script-1-playermovementcs)
     - [Script 2: `PickupCollector.cs` (Basic Version)](#script-2-pickupcollectorcs-basic-version)
@@ -234,6 +238,7 @@ We’ll write a small C# script that reads keyboard input and applies force to r
 
 4. Drag the script onto the **Player** object in the **Hierarchy**  
    Or: Select the Player → click `Add Component` → search for your script
+   ![image](/images/add-ball-move-script.png)
 
 5. Double-click the script to open it in your code editor (like VS Code)
 
@@ -276,6 +281,16 @@ Full explanations for how the code works are at the bottom of this README — fe
 
 ### 7. Add Pickups
 
+> **Before you continue:**  
+> Make sure your **Main Camera** is positioned so the floor, player, and pickups will be easily visible in Game view.  
+> You can do this by:
+> - Selecting the **Main Camera** in the Hierarchy  
+> - Moving or rotating it using the **Move Tool** and **Rotate Tool**  
+> - Adjusting its **Position** and **Rotation** in the Inspector  
+> 
+> ![image](/images/adjust-camera.png)
+
+
 Now let’s add some cubes for the player to collect.
 
 We’ll start with one small cube, set it up properly, and then you can duplicate it to place more around the scene.
@@ -297,14 +312,18 @@ We’ll start with one small cube, set it up properly, and then you can duplicat
 6. At the top of the **Inspector**, open the **Tag** dropdown and click **Add Tag**  
    - Click the **+** button
    - Name your new tag `Pickup`
+  ![image](/images/add-tag.png)
    - Then go back to your object and assign it that tag
+  ![image](/images/assign-tag.png)
 
-7. Still in the Inspector, find the **Box Collider** component  
+1. Still in the Inspector, find the **Box Collider** component  
    - Check the box labeled **Is Trigger**
+  ![image](/images/is-trigger.png)
 
 
 Once it looks good, press **Ctrl + D** (or Cmd + D on Mac) to duplicate it  
 Move the new ones around the scene using the **Move Tool**, try adding 5–10 pickups wherever you like!
+![image](/images/duplicate-cubes.png)
 
 ---
 
@@ -312,7 +331,7 @@ Move the new ones around the scene using the **Move Tool**, try adding 5–10 pi
 
 Now let’s make the pickups disappear when the player touches them.
 
-We’ll write a small script that checks if the Player has entered a pickup’s trigger zone, and removes it from the scene.
+We’ll write a small script that checks if the Player has entered a pickup’s trigger zone, and removes it from the scene. If you're confused by the steps go back to the player movement script we did earlier, this is a similar process. 
 
 #### Steps:
 
@@ -343,7 +362,7 @@ Now press **Play** and roll into a pickup, it should disappear when the ball tou
 If it doesn’t work, check that:
 - The pickup is tagged `Pickup`  
 - The pickup's **Box Collider** has **Is Trigger** checked  
-- The script is attached to the Player
+- The script is attached to the Player and not the Pickups for example
 
 ---
 
@@ -356,8 +375,9 @@ We’ll add a Text UI object, update it through the script, and connect it prope
 #### Steps:
 
 1. **Right-click** in the **Hierarchy**  
-   Go to **UI → Text - TextMeshPro**  
-   If Unity asks to import TMP Essentials, click **Import**
+   Go to **UI → Text - TextMeshPro**
+   ![image](/images/add-tmp.png)
+   If Unity asks to import TMP Essentials, click **Import** (This is very important, otherwise it will not work.)
 
 2. A few things will be added automatically:
    - A `Canvas` object (used for all UI)
@@ -370,39 +390,38 @@ We’ll add a Text UI object, update it through the script, and connect it prope
    `Score: 0`
 
 5. Still with the text selected, adjust the font size and alignment in the Inspector:
-   - Set alignment to **top-left**
+   - Set alignment to **bottom-left** 
+   - You can also change the color of the text in the inspector so you can see it more easily.
 
 6. Set the text position in the corner of the screen:
    - Click the **Anchor Presets** icon (the 9-square box in Rect Transform)
-   - Choose the **top-left** square
+   - Choose the **bottom-left** square
    - Then set (adjust if needed):
-     - Pos X: `10`
-     - Pos Y: `-10`
-     - Width: `200`
-     - Height: `50`
+     Change the pos X and Y around to your liking. (For me it ended up being Pos X = 250 and Pos Y = 150.)
+     ![image](/images/move-change-color-tmp.png)
 
 7. Now go back to your `PickupCollector` script and replace the code with this:
 
 ```csharp
 using UnityEngine;
-using TMPro;
+using TMPro; // We added
 
 public class PickupCollector : MonoBehaviour
 {
-    public TextMeshProUGUI scoreText;
-    private int score = 0;
+    public TextMeshProUGUI scoreText; // We added
+    private int score = 0; // We added
 
     void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Pickup"))
         {
             Destroy(other.gameObject);
-            score++;
-            UpdateScoreUI();
+            score++; // We added
+            UpdateScoreUI(); // We added
         }
     }
 
-    void UpdateScoreUI()
+    void UpdateScoreUI() // We added
     {
         scoreText.text = "Score: " + score;
     }
@@ -413,6 +432,7 @@ public class PickupCollector : MonoBehaviour
 9. In the **Inspector**, look for the `PickupCollector` script section
 
 10. Drag the `Text (TMP)` object from the **Hierarchy** into the **Score Text** field (This step is required, Unity won’t link the text unless you do it manually. If you skip this, you’ll get a `NullReferenceException` when the game runs.)
+![image](/images/drag-tmp-ref.png)
 
 11. Press **Play** and roll into some pickups
 
@@ -452,28 +472,29 @@ We’ll:
 
 4. Disable the text so it stays hidden until needed:
    - In the Inspector, uncheck the box next to the object’s name (top-left)
+  ![image](/images/disable-game-over-tmp.png)
 
 5. Open your `PickupCollector` script and replace it with the following:
 
 ```csharp
 using UnityEngine;
 using TMPro;
-using UnityEngine.SceneManagement;
+using UnityEngine.SceneManagement; // We added
 
 public class PickupCollector : MonoBehaviour
 {
     public TextMeshProUGUI scoreText;
-    public GameObject gameOverText;
+    public GameObject gameOverText; // We added
     private int score = 0;
-    private int totalPickups;
+    private int totalPickups; // We added
 
-    void Start()
+    void Start() // We added
     {
         totalPickups = GameObject.FindGameObjectsWithTag("Pickup").Length;
         UpdateScoreUI();
     }
 
-    void Update()
+    void Update() // We added
     {
         if (transform.position.y < -5f)
         {
@@ -489,7 +510,7 @@ public class PickupCollector : MonoBehaviour
             score++;
             UpdateScoreUI();
 
-            if (score >= totalPickups)
+            if (score >= totalPickups) // We added
             {
                 Win();
             }
@@ -501,13 +522,13 @@ public class PickupCollector : MonoBehaviour
         scoreText.text = "Score: " + score;
     }
 
-    void GameOver()
+    void GameOver() // We added
     {
         gameOverText.SetActive(true);
         Time.timeScale = 0f;
     }
 
-    void Win()
+    void Win() // We added
     {
         scoreText.text = "YOU WIN!";
         Time.timeScale = 0f;
@@ -519,11 +540,38 @@ public class PickupCollector : MonoBehaviour
 7. In the Inspector, find the PickupCollector script section
 
 8. Drag the GameOverText object from the Hierarchy into the Game Over Text field
+   ![image](/images/drag-go-ref.png)
 
-9. Press Play and roll off the platform
+9.  Press Play and roll off the platform
 - You should see the game over message appear on screen, and the game should pause.
   
 ---
+
+### 11. Add Materials and Color ⋆ ˚｡⋆୨୧˚
+
+Let’s make the game look a little nicer by adding color to the player, floor, and pickups.
+
+We’ll use Unity’s built-in **Materials** system to do this.
+
+#### Steps:
+
+1. In the **Project** panel, right-click in the `Assets` folder  
+2. Go to **Create → Material**, Do that 3 times
+3. Name it something like `PlayerMaterial`, `FloorMaterial`, `PickupMaterial`
+
+4. With the material selected, look in the **Inspector**  
+   - Click the color box next to **Albedo**
+  ![image](/images/change-mat-color.png)
+   - Pick a color you like (e.g. blue for the ball, green for the floor, yellow for the pickups) Here are some nice 3-color palettes for you: [Coolors 3-Colored Palettes](https://coolors.co/palettes/popular/3%20colors)
+
+5. Drag the material onto the object in the **Scene** or **Hierarchy**  
+   ![image](/images/drag-mat-to-object.png)
+   - For example, drag `PlayerMaterial` onto the Player sphere  
+   - Drag `FloorMaterial` onto the Plane  
+   - Make a separate material for the pickups if you want each object to have its own look or you can also select all cubes by picking them while holding Cmd on Mac and then dragging it like before.
+
+#### Finished Product:
+![image](/images/finished-product.png)
 
 ## Code Explanation
 
