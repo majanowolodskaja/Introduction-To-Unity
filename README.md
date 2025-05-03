@@ -44,7 +44,7 @@ If you want to build this game step by step yourself, just scroll down, everythi
 
 If you just want to look at the finished version:
 - Click the green **Code** button on the top of this page and **download the ZIP** (Unity will generate missing files when it opens the project, so don't worry if the zip looks kinda empty)
-- Open it in Unity Hub (Make sure to open the folder called Roll-a-Ball Demo v3 and not the whole Introduction-To-Unity) → press **Play**
+- Open it in Unity Hub **(Important: Make sure to open the folder called Roll-a-Ball Demo v3 and not the whole Introduction-To-Unity)** → press **Play**
 
 ## How to Build This Game
 
